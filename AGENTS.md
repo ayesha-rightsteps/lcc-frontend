@@ -179,14 +179,118 @@ Never hardcode base URLs anywhere. They are read in `src/services/api.js` only.
 ## Tailwind CSS v4
 
 Using Tailwind v4 via `@tailwindcss/vite` plugin — no `tailwind.config.js` needed.
-Custom design tokens (colors, fonts, spacing) go in `src/index.css` under `@theme`.
-Ayesha will define the design system tokens — do not invent color names or values.
+All design tokens are defined in `src/index.css` — under `@theme` for static values, and under
+`:root` / `[data-theme]` for theme-aware CSS variables.
 
-## Design system — Ayesha's domain
+## Design system — non-negotiable, always follow
 
-`src/components/ui/` is owned by the designer.
+`src/components/ui/` is owned by Ayesha. Do not create files there without her instruction.
 When building pages or features, use whatever UI components exist in `src/components/ui/`.
-If a needed primitive doesn't exist yet, use plain Tailwind and flag it — do not create a half-finished component.
+If a needed primitive doesn't exist yet, use plain Tailwind classes + CSS variables and flag it.
+Do not invent token names or color values. Everything you need is defined below and in `index.css`.
+
+### Brand identity
+
+Project: **ISSB Smart Study** — military + education platform.
+Brand colors come from the logo: deep army green + rich brass gold.
+Every design decision must feel premium, authoritative, and trustworthy.
+
+### Fonts
+
+| Token | Family | Use |
+|---|---|---|
+| `--font-sans` | Inter | All UI text, labels, body copy |
+| `--font-heading` | Playfair Display | Page titles, section headings, hero text |
+| `--font-mono` | JetBrains Mono | OTP inputs, numeric data, code |
+
+Always use the token, never hardcode font names in components.
+
+```css
+font-family: var(--font-sans);
+font-family: var(--font-heading);
+```
+
+### Color tokens — static (same in both modes)
+
+| Token | Value | Use |
+|---|---|---|
+| `--color-primary` | `#1B4332` | Primary brand green — buttons, links, active states |
+| `--color-primary-light` | `#2D6A4F` | Hover state on primary elements |
+| `--color-primary-dark` | `#0D2B1E` | Pressed / active state |
+| `--color-accent` | `#C9A84C` | Gold accent — badges, highlights, borders on cards |
+| `--color-accent-light` | `#E8C96A` | Hover state on accent elements |
+| `--color-accent-dark` | `#A07830` | Pressed gold, deep decorative use |
+| `--color-success` | `#2D9E6B` | Success messages, completed states |
+| `--color-error` | `#C0392B` | Form errors, destructive alerts |
+| `--color-warning` | `#E07B00` | Warning banners |
+| `--color-info` | `#2471A3` | Info badges, hints |
+
+### Color tokens — theme-aware (change between light and dark)
+
+These are CSS variables, not Tailwind tokens. Use them with `var()`:
+
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| `--color-bg` | `#F8F6F0` | `#0D1A14` | Page background |
+| `--color-surface` | `#FFFFFF` | `#132218` | Card / panel background |
+| `--color-surface-elevated` | `#F0EDE5` | `#1A2E22` | Elevated surfaces, dropdowns |
+| `--color-border` | `#D4CFC4` | `#253D2E` | Default borders |
+| `--color-border-subtle` | `#E8E4DC` | `#1E3326` | Subtle dividers |
+| `--color-text` | `#1A1A1A` | `#F0EDE5` | Primary text |
+| `--color-text-muted` | `#6B6560` | `#8A9E90` | Secondary / helper text |
+| `--color-text-placeholder` | `#A09A93` | `#5A7060` | Input placeholder text |
+| `--color-text-on-primary` | `#FFFFFF` | `#FFFFFF` | Text on green backgrounds |
+| `--color-text-on-accent` | `#1B1000` | `#1B1000` | Text on gold backgrounds |
+| `--color-primary-soft` | `rgba(27,67,50,0.08)` | `rgba(45,106,79,0.15)` | Soft green tints |
+| `--color-accent-soft` | `rgba(201,168,76,0.12)` | `rgba(201,168,76,0.1)` | Soft gold tints |
+| `--shadow-card` | green-tinted shadow | dark shadow | Default card shadow |
+
+### Shadows
+
+| Token | Use |
+|---|---|
+| `--shadow-sm` | Subtle lifts |
+| `--shadow-md` | Cards, inputs on focus |
+| `--shadow-lg` | Modals, dropdowns |
+| `--shadow-accent` | Gold-glowing CTAs |
+
+### Border radius
+
+| Token | Value | Use |
+|---|---|---|
+| `--radius-sm` | `4px` | Badges, tags, small inputs |
+| `--radius-md` | `8px` | Buttons, cards |
+| `--radius-lg` | `12px` | Large cards, panels |
+| `--radius-xl` | `16px` | Modals, sheets |
+| `--radius-full` | `9999px` | Pills, avatars |
+
+### Dark / light mode implementation
+
+Theme is controlled by `data-theme` attribute on `<html>`:
+
+```html
+<html data-theme="light">
+<html data-theme="dark">
+```
+
+User preference is stored in `localStorage` under the key `theme`.
+The toggle hook reads from `localStorage` on mount and applies the attribute to `document.documentElement`.
+Default: **light mode**.
+
+```js
+const stored = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', stored);
+```
+
+Never use Tailwind's `dark:` variant. Always use `var(--color-*)` tokens.
+The theme switch is instant — CSS variables automatically cascade to all components.
+
+### Usage rules
+
+- Always use `var(--color-*)` for any color that appears in the UI
+- Never hardcode hex values in components or pages
+- For Tailwind utility classes that need a color, use arbitrary values: `bg-[var(--color-surface)]`
+- Do not add new tokens to `index.css` without Ayesha's approval
 
 ## Production standards
 
