@@ -50,19 +50,39 @@ const Watermark = ({ username }) => (
     overflow: 'hidden',
   }}>
     {Array.from({ length: 12 }).map((_, i) => (
-      <div key={i} style={{
+      <div key={`text-${i}`} style={{
         position: 'absolute',
         top: `${(i % 4) * 28 + 5}%`,
         left: `${Math.floor(i / 4) * 36 + 5}%`,
         transform: 'rotate(-30deg)',
-        fontFamily: 'monospace',
-        fontSize: '0.75rem',
-        fontWeight: 600,
-        color: 'rgba(100,100,100,0.1)',
-        whiteSpace: 'nowrap',
-        letterSpacing: '0.1em',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
       }}>
-        {username}
+        <img
+          src="/images/logo.png"
+          alt=""
+          style={{ width: 48, height: 'auto', opacity: 0.18 }}
+        />
+        <span style={{
+          fontFamily: 'monospace',
+          fontSize: '0.68rem',
+          fontWeight: 700,
+          color: 'rgba(80,80,80,0.2)',
+          whiteSpace: 'nowrap',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+        }}>
+          ISSB SMART STUDY
+        </span>
+        <span style={{
+          fontFamily: 'monospace',
+          fontSize: '0.75rem',
+          fontWeight: 700,
+          color: 'rgba(80,80,80,0.2)',
+          whiteSpace: 'nowrap',
+          letterSpacing: '0.1em',
+        }}>
+          {username}
+        </span>
       </div>
     ))}
   </div>
