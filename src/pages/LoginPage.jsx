@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, LogIn, ArrowLeft, AlertCircle } from 'lucide-react';
+import { useAuth } from '../store/AuthContext.jsx';
+import { useApi } from '../hooks/useApi.js';
+import API_ENDPOINTS from '../constants/api-endpoints.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login, isAuthenticated, user } = useAuth();
+  const { post, loading, error, setError } = useApi();
   const [form, setForm] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setError('');
@@ -21,32 +24,21 @@ const LoginPage = () => {
       setError('Please enter your username and password.');
       return;
     }
-    setLoading(true);
-    setError('');
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/v1/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: form.username.trim(), password: form.password }),
+      const res = await post(API_ENDPOINTS.AUTH.LOGIN, {
+        identifier: form.username.trim(),
+        password: form.password,
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.message || 'Login failed. Please check your credentials.');
-        return;
-      }
-      localStorage.setItem('accessToken', data.data.accessToken);
-      localStorage.setItem('user', JSON.stringify(data.data.user));
-      if (data.data.user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
-    } catch {
-      setError('Unable to connect to the server. Please try again.');
-    } finally {
-      setLoading(false);
+      const { user, tokens } = res.data;
+      login(user, tokens.accessToken, tokens.refreshToken);
+    } catch (err) {
+      // Error is handled by useApi and set in the error state
     }
   };
+
+  if (isAuthenticated && user) {
+    return <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/dashboard'} replace />;
+  }
 
   return (
     <div style={{
