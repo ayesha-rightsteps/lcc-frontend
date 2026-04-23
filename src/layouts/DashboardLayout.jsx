@@ -5,7 +5,7 @@ import useAntiPiracy from '../hooks/useAntiPiracy.js';
 import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, BookOpen, Ticket, Phone, LogOut, Sun, Moon,
-  Users, BarChart3, ShieldAlert,
+  Users, BarChart3, ShieldAlert, UserPlus,
 } from 'lucide-react';
 
 const studentNav = [
@@ -23,6 +23,7 @@ const adminNav = [
   { to: '/admin/consultations', icon: <Phone size={18} />, label: 'Consultations' },
   { to: '/admin/reports', icon: <BarChart3 size={18} />, label: 'Reports' },
   { to: '/admin/security', icon: <ShieldAlert size={18} />, label: 'Security' },
+  { to: '/admin/leads', icon: <UserPlus size={18} />, label: 'Enquiries' },
 ];
 
 const LiveClock = () => {

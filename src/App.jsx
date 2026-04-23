@@ -17,6 +17,7 @@ const AdminTicketsPage = lazy(() => import('./pages/admin/AdminTicketsPage.jsx')
 const AdminConsultationsPage = lazy(() => import('./pages/admin/AdminConsultationsPage.jsx'));
 const AdminReportsPage = lazy(() => import('./pages/admin/AdminReportsPage.jsx'));
 const AdminSecurityPage = lazy(() => import('./pages/admin/AdminSecurityPage.jsx'));
+const AdminLeadsPage = lazy(() => import('./pages/admin/AdminLeadsPage.jsx'));
 
 const App = () => (
   <AuthProvider>
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/admin/consultations" element={<ProtectedRoute adminOnly><AdminConsultationsPage /></ProtectedRoute>} />
           <Route path="/admin/reports" element={<ProtectedRoute adminOnly><AdminReportsPage /></ProtectedRoute>} />
           <Route path="/admin/security" element={<ProtectedRoute adminOnly><AdminSecurityPage /></ProtectedRoute>} />
+          <Route path="/admin/leads" element={<ProtectedRoute adminOnly><AdminLeadsPage /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
