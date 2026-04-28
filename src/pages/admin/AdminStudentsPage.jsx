@@ -15,7 +15,7 @@ import { Plus, UserCheck, UserX, RefreshCw, Clock } from 'lucide-react';
 const statusColor = { active: 'green', inactive: 'gray', blocked: 'red' };
 
 const AdminStudentsPage = () => {
-  const { get, post, patch, loading, error, setError } = useApi();
+  const { get, post, loading, error, setError } = useApi();
   const [students, setStudents] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [created, setCreated] = useState(null);
@@ -44,7 +44,7 @@ const AdminStudentsPage = () => {
   };
 
   const handleStatus = async (id, action, extra = {}) => {
-    await patch(API_ENDPOINTS.USERS.STATUS(id), { action, ...extra });
+    await post(API_ENDPOINTS.USERS.STATUS(id), { action, ...extra });
     load();
   };
 
@@ -94,7 +94,7 @@ const AdminStudentsPage = () => {
                           {status === 'active' && <Button size="sm" variant="ghost" onClick={() => handleStatus(s._id, 'deactivate')}><UserX size={13} />Deactivate</Button>}
                           {status !== 'blocked' && <Button size="sm" variant="danger" onClick={() => handleStatus(s._id, 'block')}><UserX size={13} />Block</Button>}
                           <Button size="sm" variant="outline" onClick={() => handleStatus(s._id, 'extend_validity', { extendedDays: 30 })}><Clock size={13} />+30d</Button>
-                          <Button size="sm" variant="ghost" onClick={() => patch(API_ENDPOINTS.USERS.IPS(s._id), { action: 'reset' }).then(load)}><RefreshCw size={13} />Reset IPs</Button>
+                          <Button size="sm" variant="ghost" onClick={() => post(API_ENDPOINTS.USERS.IPS(s._id), { action: 'reset' }).then(load)}><RefreshCw size={13} />Reset IPs</Button>
                         </div>
                       </td>
                     </tr>

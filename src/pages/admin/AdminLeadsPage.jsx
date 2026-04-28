@@ -42,7 +42,7 @@ const AdminLeadsPage = () => {
   const updateStatus = async (leadId, status) => {
     setUpdatingId(leadId);
     try {
-      await api.patch(`/leads/${leadId}/status`, { status });
+      await api.post(`/leads/${leadId}/status`, { status });
       setLeads(prev => prev.map(l => l._id === leadId ? { ...l, status } : l));
     } finally {
       setUpdatingId(null);

@@ -15,7 +15,7 @@ const statusColor = { open: 'blue', in_progress: 'yellow', resolved: 'green', cl
 const nextStatus = { open: 'in_progress', in_progress: 'resolved', resolved: 'closed' };
 
 const AdminTicketsPage = () => {
-  const { get, post, patch, loading, error } = useApi();
+  const { get, post, loading, error } = useApi();
   const [tickets, setTickets] = useState([]);
   const [selected, setSelected] = useState(null);
   const [reply, setReply] = useState('');
@@ -38,7 +38,7 @@ const AdminTicketsPage = () => {
   };
 
   const handleStatus = async (id, status) => {
-    await patch(API_ENDPOINTS.TICKETS.STATUS(id), { status });
+    await post(API_ENDPOINTS.TICKETS.STATUS(id), { status });
     load();
     setSelected(null);
   };
