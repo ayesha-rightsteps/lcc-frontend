@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
+import api from '../services/api.js';
 
-const BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 const COOLDOWN_MS = 15000;
 const lastSentAt = {};
 
@@ -8,13 +8,8 @@ const sendAlert = (alertType, description) => {
   const now = Date.now();
   if (lastSentAt[alertType] && now - lastSentAt[alertType] < COOLDOWN_MS) return;
   lastSentAt[alertType] = now;
-  const token = localStorage.getItem('accessToken');
-  if (!token) return;
-  fetch(`${BASE}/v1/security/alerts`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ alertType, description }),
-  }).catch(() => {});
+  if (!localStorage.getItem('accessToken')) return;
+  api.post('/security/alerts', { alertType, description }).catch(() => {});
 };
 
 export { sendAlert };
@@ -66,6 +61,15 @@ const useAntiPiracy = (active = true) => {
     // Global CSS protection
     document.body.style.userSelect = 'none';
     document.body.style.webkitUserSelect = 'none';
+
+    // 0. Window blur — fires when Cmd+Shift+4 drag starts or user alt-tabs
+    const onBlur = () => {
+      showOverlay(0);
+      sendAlert('screenshot_attempt', 'Window lost focus (possible screenshot/recording)');
+    };
+    const onFocus = () => hideOverlay();
+    window.addEventListener('blur', onBlur);
+    window.addEventListener('focus', onFocus);
 
     // 1. Right-click
     const onContextMenu = (e) => {
@@ -158,6 +162,8 @@ const useAntiPiracy = (active = true) => {
     return () => {
       document.body.style.userSelect = '';
       document.body.style.webkitUserSelect = '';
+      window.removeEventListener('blur', onBlur);
+      window.removeEventListener('focus', onFocus);
       document.removeEventListener('contextmenu', onContextMenu, true);
       document.removeEventListener('copy', onCopy, true);
       document.removeEventListener('cut', onCut, true);

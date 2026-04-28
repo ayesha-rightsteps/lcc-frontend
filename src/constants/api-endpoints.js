@@ -19,7 +19,7 @@ const CONTENT = {
 
 const TICKETS = {
   BASE: '/tickets',
-  MY_TICKETS: '/tickets/my-tickets',
+  MY_TICKETS: '/tickets/my',
   REPLY: (id) => `/tickets/${id}/reply`,
   STATUS: (id) => `/tickets/${id}/status`,
 };
@@ -29,7 +29,7 @@ const CONSULTATIONS = {
   MY: '/consultations/my-consultations',
   ACCEPT: (id) => `/consultations/${id}/accept`,
   REJECT: (id) => `/consultations/${id}/reject`,
-  STATUS: (id) => `/consultations/${id}/status`,
+  COMPLETE: (id) => `/consultations/${id}/complete`,
 };
 
 const REPORTS = {

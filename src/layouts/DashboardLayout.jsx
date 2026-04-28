@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../store/AuthContext.jsx';
 import { useTheme } from '../hooks/useTheme.js';
 import useAntiPiracy from '../hooks/useAntiPiracy.js';
+import useHeartbeat from '../hooks/useHeartbeat.js';
 import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, BookOpen, Ticket, Phone, LogOut, Sun, Moon,
@@ -94,6 +95,7 @@ const DashboardLayout = ({ children }) => {
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();
   useAntiPiracy(!isAdmin);
+  useHeartbeat(!isAdmin);
 
   const nav = isAdmin ? adminNav : studentNav;
 
