@@ -51,7 +51,11 @@ const LIBRARY = {
   CATEGORIES: '/library/categories',
   CATEGORY: (id) => `/library/categories/${id}`,
   SUBCATEGORIES: '/library/subcategories',
+  UPDATE_SUBCATEGORY: (id) => `/library/subcategories/${id}/update`,
+  DELETE_SUBCATEGORY: (id) => `/library/subcategories/${id}/delete`,
   CONTENT: '/library/content',
+  UPDATE_CONTENT: (id) => `/library/content/${id}/update`,
+  DELETE_CONTENT: (id) => `/library/content/${id}/delete`,
   ACCESS: (studentId) => `/library/access/${studentId}`,
   MANAGE_ACCESS: '/library/access',
 };

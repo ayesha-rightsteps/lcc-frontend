@@ -17,7 +17,10 @@ const TOPIC_COLORS = {
 };
 
 const DrivePlayer = ({ item, onClose }) => (
-  <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.92)', display: 'flex', flexDirection: 'column' }}>
+  <div
+    style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.92)', display: 'flex', flexDirection: 'column' }}
+    onContextMenu={e => e.preventDefault()}
+  >
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', background: 'rgba(0,0,0,0.6)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <Video size={16} color="var(--color-accent)" />
@@ -27,13 +30,29 @@ const DrivePlayer = ({ item, onClose }) => (
         <X size={22} />
       </button>
     </div>
-    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <iframe
-        title={item.title}
-        src={`https://drive.google.com/file/d/${item.driveId}/preview`}
-        allow="autoplay"
-        style={{ width: '100%', maxWidth: 900, height: '75vh', border: 'none', borderRadius: 'var(--radius-lg)' }}
-      />
+    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative' }}>
+      <div style={{ position: 'relative', width: '100%', maxWidth: 900, height: '75vh' }}>
+        <iframe
+          title={item.title}
+          src={`https://drive.google.com/file/d/${item.driveId}/preview`}
+          allow="autoplay; encrypted-media"
+          referrerPolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin"
+          style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'var(--radius-lg)', display: 'block' }}
+        />
+        {/* blocks the pop-out button (top-right of Drive iframe) */}
+        <div
+          style={{ position: 'absolute', top: 0, right: 0, width: 60, height: 50, zIndex: 10, cursor: 'default', background: 'transparent' }}
+          onContextMenu={e => e.preventDefault()}
+          onClick={e => e.preventDefault()}
+        />
+        {/* blocks bottom Drive toolbar (download/open buttons) */}
+        <div
+          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 48, zIndex: 10, cursor: 'default', background: 'transparent' }}
+          onContextMenu={e => e.preventDefault()}
+          onClick={e => e.preventDefault()}
+        />
+      </div>
     </div>
   </div>
 );
