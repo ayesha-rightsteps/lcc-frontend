@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, LogIn, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, LogIn, ArrowLeft, AlertCircle, ShieldX, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../store/AuthContext.jsx';
 import { useApi } from '../hooks/useApi.js';
 import API_ENDPOINTS from '../constants/api-endpoints.js';
@@ -12,9 +12,11 @@ const LoginPage = () => {
   const { post, loading, error, setError } = useApi();
   const [form, setForm] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
+  const [blockedState, setBlockedState] = useState(null);
 
   const handleChange = (e) => {
     setError('');
+    setBlockedState(null);
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -32,7 +34,15 @@ const LoginPage = () => {
       const { user, tokens } = res.data;
       login(user, tokens.accessToken, tokens.refreshToken);
     } catch (err) {
-      // Error is handled by useApi and set in the error state
+      const status = err?.response?.status;
+      const msg = err?.response?.data?.message || '';
+      if (status === 403 && msg.toLowerCase().includes('blocked')) {
+        setBlockedState('blocked');
+        setError('');
+      } else if (status === 403 && msg.toLowerCase().includes('inactive')) {
+        setBlockedState('inactive');
+        setError('');
+      }
     }
   };
 
@@ -217,7 +227,57 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {error && (
+          {blockedState === 'blocked' && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '20px 16px',
+                background: 'rgba(192, 57, 43, 0.18)',
+                border: '1px solid rgba(192, 57, 43, 0.5)',
+                borderRadius: 'var(--radius-md)',
+                textAlign: 'center',
+              }}
+            >
+              <ShieldX size={32} color="#ff6b6b" />
+              <p style={{ color: '#ff8a80', fontWeight: 700, fontSize: '0.9rem', margin: 0 }}>Account Blocked</p>
+              <p style={{ color: 'rgba(255,138,128,0.8)', fontSize: '0.78rem', lineHeight: 1.6, margin: 0 }}>
+                Your account has been blocked due to suspicious activity.<br />
+                Please contact the admin for assistance.
+              </p>
+            </motion.div>
+          )}
+
+          {blockedState === 'inactive' && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '20px 16px',
+                background: 'rgba(224, 123, 0, 0.15)',
+                border: '1px solid rgba(224, 123, 0, 0.4)',
+                borderRadius: 'var(--radius-md)',
+                textAlign: 'center',
+              }}
+            >
+              <AlertTriangle size={32} color="#e07b00" />
+              <p style={{ color: '#f0a040', fontWeight: 700, fontSize: '0.9rem', margin: 0 }}>Account Inactive</p>
+              <p style={{ color: 'rgba(240,160,64,0.8)', fontSize: '0.78rem', lineHeight: 1.6, margin: 0 }}>
+                Your account is currently inactive.<br />
+                Please contact the admin to reactivate it.
+              </p>
+            </motion.div>
+          )}
+
+          {error && !blockedState && (
             <motion.div
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}

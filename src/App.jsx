@@ -7,7 +7,6 @@ import Loader from './components/ui/Loader.jsx';
 const LandingPage = lazy(() => import('./pages/LandingPage.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
 const StudentDashboardPage = lazy(() => import('./pages/student/StudentDashboardPage.jsx'));
-const StudentContentPage = lazy(() => import('./pages/student/StudentContentPage.jsx'));
 const StudentTicketsPage = lazy(() => import('./pages/student/StudentTicketsPage.jsx'));
 const StudentConsultationsPage = lazy(() => import('./pages/student/StudentConsultationsPage.jsx'));
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage.jsx'));
@@ -18,6 +17,9 @@ const AdminConsultationsPage = lazy(() => import('./pages/admin/AdminConsultatio
 const AdminReportsPage = lazy(() => import('./pages/admin/AdminReportsPage.jsx'));
 const AdminSecurityPage = lazy(() => import('./pages/admin/AdminSecurityPage.jsx'));
 const AdminLeadsPage = lazy(() => import('./pages/admin/AdminLeadsPage.jsx'));
+const AdminLibraryPage = lazy(() => import('./pages/admin/AdminLibraryPage.jsx'));
+const AdminLocationMapPage = lazy(() => import('./pages/admin/AdminLocationMapPage.jsx'));
+const StudentLibraryPage = lazy(() => import('./pages/student/StudentLibraryPage.jsx'));
 
 const App = () => (
   <AuthProvider>
@@ -28,9 +30,9 @@ const App = () => (
           <Route path="/login" element={<LoginPage />} />
 
           <Route path="/dashboard" element={<ProtectedRoute><StudentDashboardPage /></ProtectedRoute>} />
-          <Route path="/dashboard/content" element={<ProtectedRoute><StudentContentPage /></ProtectedRoute>} />
           <Route path="/dashboard/tickets" element={<ProtectedRoute><StudentTicketsPage /></ProtectedRoute>} />
           <Route path="/dashboard/consultations" element={<ProtectedRoute><StudentConsultationsPage /></ProtectedRoute>} />
+          <Route path="/dashboard/library" element={<ProtectedRoute><StudentLibraryPage /></ProtectedRoute>} />
 
           <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboardPage /></ProtectedRoute>} />
           <Route path="/admin/students" element={<ProtectedRoute adminOnly><AdminStudentsPage /></ProtectedRoute>} />
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="/admin/reports" element={<ProtectedRoute adminOnly><AdminReportsPage /></ProtectedRoute>} />
           <Route path="/admin/security" element={<ProtectedRoute adminOnly><AdminSecurityPage /></ProtectedRoute>} />
           <Route path="/admin/leads" element={<ProtectedRoute adminOnly><AdminLeadsPage /></ProtectedRoute>} />
+          <Route path="/admin/library" element={<ProtectedRoute adminOnly><AdminLibraryPage /></ProtectedRoute>} />
+          <Route path="/admin/map" element={<ProtectedRoute adminOnly><AdminLocationMapPage /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -5,16 +5,12 @@ const AUTH = {
 const USERS = {
   STUDENTS: '/users/students',
   HEARTBEAT: '/users/heartbeat',
+  LOCATION_DENIED: '/users/location-denied',
+  UPDATE: (id) => `/users/${id}/update`,
   STATUS: (id) => `/users/${id}/status`,
   RESET_PASSWORD: (id) => `/users/${id}/reset-password`,
+  SET_PASSWORD: (id) => `/users/${id}/set-password`,
   IPS: (id) => `/users/${id}/ips`,
-};
-
-const CONTENT = {
-  MY_CONTENT: '/content/my-content',
-  BASE: '/content',
-  STREAM: (id) => `/content/${id}/stream`,
-  ACCESS: (id) => `/content/${id}/access`,
 };
 
 const TICKETS = {
@@ -34,9 +30,15 @@ const CONSULTATIONS = {
 
 const REPORTS = {
   SUMMARY: '/reports/summary',
+  EXPIRING: '/reports/students/expiring',
+  CONSULTATIONS: '/reports/consultations',
+  TICKETS: '/reports/tickets',
   SUSPICIOUS_IPS: '/reports/suspicious-ips',
   RADAR: (id) => `/reports/student/${id}/radar`,
-  CONTENT_LOGS: '/reports/content-logs',
+  STUDENT_GROWTH: '/reports/student-growth',
+  TICKET_TREND: '/reports/ticket-trend',
+  CONSULTATION_TREND: '/reports/consultation-trend',
+  ALERT_BREAKDOWN: '/reports/alert-breakdown',
 };
 
 const SECURITY = {
@@ -44,6 +46,16 @@ const SECURITY = {
   REVIEW: (id) => `/security/alerts/${id}/review`,
 };
 
-const API_ENDPOINTS = { AUTH, USERS, CONTENT, TICKETS, CONSULTATIONS, REPORTS, SECURITY };
+const LIBRARY = {
+  MY: '/library/my',
+  CATEGORIES: '/library/categories',
+  CATEGORY: (id) => `/library/categories/${id}`,
+  SUBCATEGORIES: '/library/subcategories',
+  CONTENT: '/library/content',
+  ACCESS: (studentId) => `/library/access/${studentId}`,
+  MANAGE_ACCESS: '/library/access',
+};
+
+const API_ENDPOINTS = { AUTH, USERS, TICKETS, CONSULTATIONS, REPORTS, SECURITY, LIBRARY };
 
 export default API_ENDPOINTS;

@@ -6,12 +6,12 @@ import useHeartbeat from '../hooks/useHeartbeat.js';
 import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, BookOpen, Ticket, Phone, LogOut, Sun, Moon,
-  Users, BarChart3, ShieldAlert, UserPlus,
+  Users, BarChart3, ShieldAlert, UserPlus, Library, Map,
 } from 'lucide-react';
 
 const studentNav = [
   { to: '/dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
-  { to: '/dashboard/content', icon: <BookOpen size={18} />, label: 'My Content' },
+  { to: '/dashboard/library', icon: <Library size={18} />, label: 'Course Library' },
   { to: '/dashboard/tickets', icon: <Ticket size={18} />, label: 'Support' },
   { to: '/dashboard/consultations', icon: <Phone size={18} />, label: 'Consultations' },
 ];
@@ -19,10 +19,12 @@ const studentNav = [
 const adminNav = [
   { to: '/admin/dashboard', icon: <LayoutDashboard size={18} />, label: 'Overview' },
   { to: '/admin/students', icon: <Users size={18} />, label: 'Students' },
-  { to: '/admin/content', icon: <BookOpen size={18} />, label: 'Content' },
+  { to: '/admin/library', icon: <Library size={18} />, label: 'Course Library' },
+  { to: '/admin/content', icon: <BookOpen size={18} />, label: 'Assign Content' },
   { to: '/admin/tickets', icon: <Ticket size={18} />, label: 'Tickets' },
   { to: '/admin/consultations', icon: <Phone size={18} />, label: 'Consultations' },
   { to: '/admin/reports', icon: <BarChart3 size={18} />, label: 'Reports' },
+  { to: '/admin/map', icon: <Map size={18} />, label: 'Location Map' },
   { to: '/admin/security', icon: <ShieldAlert size={18} />, label: 'Security' },
   { to: '/admin/leads', icon: <UserPlus size={18} />, label: 'Enquiries' },
 ];
@@ -95,7 +97,7 @@ const DashboardLayout = ({ children }) => {
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();
   useAntiPiracy(!isAdmin);
-  useHeartbeat(!isAdmin);
+  useHeartbeat(!isAdmin, () => { logout(); navigate('/login'); });
 
   const nav = isAdmin ? adminNav : studentNav;
 
