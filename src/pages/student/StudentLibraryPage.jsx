@@ -63,6 +63,21 @@ const VideoWatermark = ({ username }) => (
       <span
         style={{
           fontFamily: 'monospace',
+          fontSize: '2.2rem',
+          fontWeight: 700,
+          color: 'rgba(255,255,255,0.50)',
+          whiteSpace: 'nowrap',
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          textShadow: '0 0 1px rgba(0,0,0,0.9)',
+
+        }}
+      >
+        03266111008 | 03352535456
+      </span>
+      <span
+        style={{
+          fontFamily: 'monospace',
           fontSize: '1.9rem',
           fontWeight: 700,
           color: 'rgba(255,255,255,0.50)',

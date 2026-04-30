@@ -83,6 +83,17 @@ const Watermark = ({ username }) => (
           </span>
           <span style={{
             fontFamily: 'monospace',
+            fontSize: '0.68rem',
+            fontWeight: 700,
+            color: 'rgba(80,80,80,0.18)',
+            whiteSpace: 'nowrap',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+          }}>
+            03266111008 | 03352535456
+          </span>
+          <span style={{
+            fontFamily: 'monospace',
             fontSize: '0.75rem',
             fontWeight: 700,
             color: 'rgba(80,80,80,0.18)',
