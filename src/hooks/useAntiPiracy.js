@@ -62,11 +62,8 @@ const useAntiPiracy = (active = true) => {
     document.body.style.userSelect = 'none';
     document.body.style.webkitUserSelect = 'none';
 
-    // 0. Window blur — fires when Cmd+Shift+4 drag starts or user alt-tabs
-    const onBlur = () => {
-      showOverlay(0);
-      sendAlert('screenshot_attempt', 'Window lost focus (possible screenshot/recording)');
-    };
+    // 0. Window blur — show overlay only, no API call (too many false positives from tab switching)
+    const onBlur = () => showOverlay(0);
     const onFocus = () => hideOverlay();
     window.addEventListener('blur', onBlur);
     window.addEventListener('focus', onFocus);
