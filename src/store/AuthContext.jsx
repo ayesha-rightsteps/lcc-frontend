@@ -28,11 +28,17 @@ const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateUser = (patch) => {
+    const updated = { ...user, ...patch };
+    localStorage.setItem('user', JSON.stringify(updated));
+    setUser(updated);
+  };
+
   const isAdmin = user?.role === 'admin';
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAdmin, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser, isAdmin, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

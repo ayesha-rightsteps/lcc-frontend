@@ -4,6 +4,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import useAntiPiracy from '../hooks/useAntiPiracy.js';
 import useHeartbeat from '../hooks/useHeartbeat.js';
 import { useState, useEffect } from 'react';
+import TermsModal from '../components/ui/TermsModal.jsx';
 import {
   LayoutDashboard, BookOpen, Ticket, Phone, LogOut, Sun, Moon,
   Users, BarChart3, ShieldAlert, UserPlus, Library, Map,
@@ -109,11 +110,13 @@ const Watermark = ({ username }) => (
 );
 
 const DashboardLayout = ({ children }) => {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout, isAdmin, updateUser } = useAuth();
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();
   useAntiPiracy(!isAdmin);
   useHeartbeat(!isAdmin, () => { logout(); navigate('/login'); });
+
+  const showTerms = !isAdmin && user && !user.hasAcceptedTerms;
 
   const nav = isAdmin ? adminNav : studentNav;
 
@@ -130,6 +133,9 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--color-bg)' }}>
+      {showTerms && (
+        <TermsModal onAccepted={() => updateUser({ hasAcceptedTerms: true })} />
+      )}
       <aside style={{
         width: 240, flexShrink: 0,
         background: 'var(--color-surface)',

@@ -6,6 +6,7 @@ const USERS = {
   STUDENTS: '/users/students',
   HEARTBEAT: '/users/heartbeat',
   LOCATION_DENIED: '/users/location-denied',
+  ACCEPT_TERMS: '/users/accept-terms',
   UPDATE: (id) => `/users/${id}/update`,
   STATUS: (id) => `/users/${id}/status`,
   RESET_PASSWORD: (id) => `/users/${id}/reset-password`,
