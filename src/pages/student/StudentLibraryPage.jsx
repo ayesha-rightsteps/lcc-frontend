@@ -7,6 +7,7 @@ import Alert from '../../components/ui/Alert.jsx';
 import { useApi } from '../../hooks/useApi.js';
 import API_ENDPOINTS from '../../constants/api-endpoints.js';
 import { Video, X, BookOpen, ChevronDown, ChevronRight } from 'lucide-react';
+import { useAuth } from '../../store/AuthContext.jsx';
 
 const TOPIC_ORDER = ['Initial Test', 'Interview', 'ISSB'];
 
@@ -16,7 +17,67 @@ const TOPIC_COLORS = {
   'ISSB': 'var(--color-success)',
 };
 
-const DrivePlayer = ({ item, onClose }) => (
+const VideoWatermark = ({ username }) => (
+  <div
+    style={{
+      position: 'absolute',
+      inset: 0,
+      zIndex: 20,
+      pointerEvents: 'none',
+      userSelect: 'none',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 'var(--radius-lg)',
+      opacity: 0.4,
+    }}
+  >
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 10,
+      }}
+    >
+      <img
+        src="/images/logo.png"
+        alt=""
+        style={{ width: 180, height: 'auto', opacity: 0.5 }}
+      />
+      <span
+        style={{
+          fontFamily: 'monospace',
+          fontSize: '2.2rem',
+          fontWeight: 700,
+          color: 'rgba(255,255,255,0.50)',
+          whiteSpace: 'nowrap',
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          textShadow: '0 0 1px rgba(0,0,0,0.9)',
+
+        }}
+      >
+        ISSB SMART STUDY
+      </span>
+      <span
+        style={{
+          fontFamily: 'monospace',
+          fontSize: '1.9rem',
+          fontWeight: 700,
+          color: 'rgba(255,255,255,0.50)',
+          whiteSpace: 'nowrap',
+          letterSpacing: '0.14em',
+          textShadow: '0 0 1px rgba(0,0,0,0.9)',
+        }}
+      >
+        {username}
+      </span>
+    </div>
+  </div>
+);
+
+const DrivePlayer = ({ item, username, onClose }) => (
   <div
     style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.92)', display: 'flex', flexDirection: 'column' }}
     onContextMenu={e => e.preventDefault()}
@@ -40,15 +101,17 @@ const DrivePlayer = ({ item, onClose }) => (
           sandbox="allow-scripts allow-same-origin"
           style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'var(--radius-lg)', display: 'block' }}
         />
+        {/* Prominent watermark grid directly over the video */}
+        <VideoWatermark username={username} />
         {/* blocks the pop-out button (top-right of Drive iframe) */}
         <div
-          style={{ position: 'absolute', top: 0, right: 0, width: 60, height: 50, zIndex: 10, cursor: 'default', background: 'transparent' }}
+          style={{ position: 'absolute', top: 0, right: 0, width: 60, height: 50, zIndex: 25, cursor: 'default', background: 'transparent' }}
           onContextMenu={e => e.preventDefault()}
           onClick={e => e.preventDefault()}
         />
         {/* blocks bottom Drive toolbar (download/open buttons) */}
         <div
-          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 48, zIndex: 10, cursor: 'default', background: 'transparent' }}
+          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 48, zIndex: 25, cursor: 'default', background: 'transparent' }}
           onContextMenu={e => e.preventDefault()}
           onClick={e => e.preventDefault()}
         />
@@ -57,7 +120,7 @@ const DrivePlayer = ({ item, onClose }) => (
   </div>
 );
 
-const TopicSection = ({ topic }) => {
+const TopicSection = ({ topic, username }) => {
   const [open, setOpen] = useState(false);
   const [playing, setPlaying] = useState(null);
   const color = TOPIC_COLORS[topic.name] || 'var(--color-primary)';
@@ -99,12 +162,12 @@ const TopicSection = ({ topic }) => {
         </div>
       )}
 
-      {playing && <DrivePlayer item={playing} onClose={() => setPlaying(null)} />}
+      {playing && <DrivePlayer item={playing} username={username} onClose={() => setPlaying(null)} />}
     </div>
   );
 };
 
-const SubcategorySection = ({ sub }) => {
+const SubcategorySection = ({ sub, username }) => {
   const [open, setOpen] = useState(true);
   const sortedTopics = (sub.topics || []).slice().sort(
     (a, b) => TOPIC_ORDER.indexOf(a.name) - TOPIC_ORDER.indexOf(b.name)
@@ -121,17 +184,18 @@ const SubcategorySection = ({ sub }) => {
         <h3 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--color-text)' }}>{sub.name}</h3>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--color-text-muted)', marginLeft: 4 }}>{totalVideos} videos</span>
       </div>
-      {open && sortedTopics.map(t => <TopicSection key={t._id} topic={t} />)}
+      {open && sortedTopics.map(t => <TopicSection key={t._id} topic={t} username={username} />)}
     </Card>
   );
 };
 
 const StudentLibraryPage = () => {
   const { get, loading, error } = useApi();
+  const { user } = useAuth();
   const [library, setLibrary] = useState(null);
 
   useEffect(() => {
-    get(API_ENDPOINTS.LIBRARY.MY).then(r => setLibrary(r?.data || null)).catch(() => {});
+    get(API_ENDPOINTS.LIBRARY.MY).then(r => setLibrary(r?.data || null)).catch(() => { });
   }, []);
 
   if (loading) return <DashboardLayout><Loader fullPage /></DashboardLayout>;
@@ -156,7 +220,7 @@ const StudentLibraryPage = () => {
         )}
 
         {library?.subcategories?.map(sub => (
-          <SubcategorySection key={sub._id} sub={sub} />
+          <SubcategorySection key={sub._id} sub={sub} username={user?.username || user?.fullName || 'Student'} />
         ))}
       </div>
     </DashboardLayout>
