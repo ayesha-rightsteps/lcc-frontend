@@ -17,7 +17,7 @@ import API_ENDPOINTS from '../../constants/api-endpoints.js';
 import {
   Plus, UserCheck, UserX, RefreshCw, Clock, Pencil,
   Search, KeyRound, X, ChevronRight, MapPin, Mail,
-  Phone, BookOpen, Calendar, Shield,
+  Phone, BookOpen, Calendar, Shield, Trash2,
 } from 'lucide-react';
 
 const LIMIT = 10;
@@ -100,6 +100,7 @@ const StudentPanel = ({ student, categories, onClose, onUpdated }) => {
   const [submitting, setSubmitting] = useState(false);
   const [passStep, setPassStep] = useState(null);
   const [newPassword, setNewPassword] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     setCurrent(student);
@@ -143,6 +144,16 @@ const StudentPanel = ({ student, categories, onClose, onUpdated }) => {
   const handleResetIps = async () => {
     await post(API_ENDPOINTS.USERS.IPS(current._id), { action: 'reset' });
     onUpdated();
+  };
+
+  const handleDelete = async () => {
+    setSubmitting(true);
+    try {
+      await post(API_ENDPOINTS.USERS.DELETE(current._id), {});
+      onUpdated();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleSetPassword = async (sendEmail) => {
@@ -337,6 +348,24 @@ const StudentPanel = ({ student, categories, onClose, onUpdated }) => {
               </div>
             </div>
           )}
+
+          {/* Delete Student */}
+          <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 16 }}>
+            {!confirmDelete ? (
+              <Button size="sm" variant="danger" onClick={() => setConfirmDelete(true)}>
+                <Trash2 size={13} />Delete Student
+              </Button>
+            ) : (
+              <div style={{ padding: '14px 16px', background: 'var(--color-bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-error)' }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-error)', margin: '0 0 4px' }}>Permanently delete this student?</p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: '0 0 12px' }}>This cannot be undone. All data for <strong>{current.fullName}</strong> will be removed.</p>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)}>Cancel</Button>
+                  <Button size="sm" variant="danger" loading={submitting} onClick={handleDelete}>Yes, Delete</Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

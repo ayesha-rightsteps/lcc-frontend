@@ -12,6 +12,7 @@ const USERS = {
   RESET_PASSWORD: (id) => `/users/${id}/reset-password`,
   SET_PASSWORD: (id) => `/users/${id}/set-password`,
   IPS: (id) => `/users/${id}/ips`,
+  DELETE: (id) => `/users/${id}/delete`,
 };
 
 const TICKETS = {
